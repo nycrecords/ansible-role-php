@@ -1,0 +1,14 @@
+---
+- name: Ensure PHP packages are installed.
+  package:
+    name: "{{ php_packages + php_packages_extra }}"
+    state: "{{ php_packages_state }}"
+    enablerepo: "{{ php_enablerepo | default(omit, true) }}"
+  notify: restart webserver
+
+- name: Setup autoload of php software collections
+  template:
+    src: "php.sh.j2"
+    dest: "/etc/profile.d/{{ php_scl_package }}.sh"
+    mode: 0644
+  when: php_use_scl

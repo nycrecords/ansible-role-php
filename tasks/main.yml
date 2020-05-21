@@ -48,6 +48,13 @@
   when:
     - not php_install_from_source
     - ansible_os_family == 'RedHat'
+    - not php_use_scl
+
+- include_tasks: setup-RedHat-SCL.yml
+  when:
+    - not php_install_from_source
+    - ansible_os_family == 'RedHat'
+    - php_use_scl
 
 - include_tasks: setup-Debian.yml
   when:

@@ -1,0 +1,27 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+
+  vars:
+    # Role: yum_config_manager
+    repositories:
+      enabled:
+        - rhui-REGION-rhel-server-rhscl
+        - rhui-REGION-rhel-server-debug-rhscl
+
+    # Role: ruby
+    ruby_install_from_source: false
+    ruby_packages:
+      - rh-ruby25
+      - rh-ruby25-ruby-devel
+      - rh-ruby25-rubygem-bundler
+      - "{{ ruby_rubygems_package_name }}"
+      - '@development'
+    ruby_scl_package: rh-ruby25
+    ruby_use_scl: true
+    ruby_install_bundler: true
+
+  roles:
+    - role: nycrecords.yum_config_manager
+    - role: ansible-role-ruby

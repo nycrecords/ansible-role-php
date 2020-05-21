@@ -3,6 +3,9 @@
 # for RHEL/CentOS.
 php_enablerepo: ""
 
+# RHEL/CentOS only. Use Software Collections
+use_scl: false
+
 # Extra packages to install (in addition to distro-specific default lists).
 php_packages_extra: []
 

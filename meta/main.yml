@@ -2,9 +2,9 @@
 dependencies: []
 
 galaxy_info:
-  author: geerlingguy
+  author: Gary Zhou
   description: PHP for RedHat/CentOS/Fedora/Debian/Ubuntu.
-  company: "Midwestern Mac, LLC"
+  company: "City of New York, Department of Records and Information Services"
   license: "license (BSD, MIT)"
   min_ansible_version: 2.8
   platforms:

@@ -4,66 +4,54 @@
   become: true
 
   vars:
-    php_enable_webserver: false
-    php_enable_php_fpm: true
-    php_memory_limit: "192M"
-    php_enablerepo: "remi,remi-php70"
-    php_install_recommends: false
+    # Role: rhsm
+    rhsm_username: "garyzhouny"
+    rhsm_password: "***REMOVED***"
+    rhsm_auto_attach: true
+    rhsm_server_proxy_hostname: "{{ lookup('env', 'http_proxy_hostname') }}"
+    rhsm_server_proxy_port: "{{ lookup('env', 'http_proxy_port') }}"
+    rhsm_server_proxy_user: "{{ lookup('env', 'http_proxy_user') }}"
+    rhsm_server_proxy_password: "{{ lookup('env', 'http_proxy_password') }}"
+    rhsm_consumer_name: "nycrecords_{{ '%Y%m%d_%H%M%s' | strftime(ansible_date_time.epoch) }}"
 
-  handlers:
-    - name: update apt cache
-      apt: update_cache=true
-      when: ansible_os_family == 'Debian'
+    # Role: nginx
+    nginx_yum_repo_enabled: false
+    nginx_use_scl: true
+    nginx_package_name: rh-nginx18
+    nginx_service_name: rh-nginx18-nginx
+    nginx_conf_path: /etc/opt/rh/rh-nginx18/nginx/conf.d
+    nginx_conf_file_path: /etc/opt/rh/rh-nginx18/nginx/nginx.conf
+    nginx_mime_file_path: /etc/opt/rh/rh-nginx18/nginx/mime.types
+    nginx_pid_file: /var/opt/rh/rh-nginx18/run/nginx/nginx.pid
+    nginx_access_log: "/var/opt/rh/rh-nginx18/log/nginx/access.log main buffer=16k flush=2m"
+    nginx_error_log: "/var/opt/rh/rh-nginx18/log/nginx/error.log warn"
+    nginx_vhost_path: /etc/opt/rh/rh-nginx18/nginx/conf.d
+    nginx_default_vhost_path: /etc/opt/rh/rh-nginx18/nginx/conf.d/default.conf
+    nginx_vhosts:
+      - listen: "80"
+        server_name: "0.0.0.0"
+        root: "/opt/rh/rh-nginx18/root/usr/share/nginx/html"
+        index: "index.html index.htm"
 
-  pre_tasks:
-    - name: Update apt cache.
-      apt: update_cache=true cache_valid_time=600
-      when: ansible_os_family == 'Debian'
-      changed_when: false
-
-    # Ubuntu-specific tasks.
-    - name: Ensure dirmngr is installed (gnupg dependency).
-      apt:
-        name: dirmngr
-        state: present
-      when: ansible_distribution == 'Ubuntu'
-
-    - name: Add repository for PHP 7.
-      apt_repository: repo='ppa:ondrej/php'
-      when: ansible_distribution == 'Ubuntu'
-
-    # Debian-specific tasks.
-    - name: Add dependencies for PHP versions (Debian).
-      apt:
-        name:
-          - apt-transport-https
-          - ca-certificates
-        state: present
-      when: ansible_distribution == "Debian"
-
-    - name: Add Ondrej Sury's apt key (Debian).
-      apt_key:
-        url: https://packages.sury.org/php/apt.gpg
-        state: present
-      when: ansible_distribution == "Debian"
-
-    - name: Add Ondrej Sury's repo (Debian).
-      apt_repository:
-        repo: "deb https://packages.sury.org/php/ {{ ansible_distribution_release }} main"
-        state: present
-      when: ansible_distribution == "Debian"
-      notify: update apt cache
-
-    - meta: flush_handlers
+    # Role: php
+    php_install_from_source: false
+    php_packages:
+      - rh-php72
+      - rh-php72-php-bcmath
+      - rh-php72-php-common
+      - rh-php72-php-fpm
+      - rh-php72-php-mbstring
+      - rh-php72-php-mysqlnd
+      - rh-php72-php-pdo
+      - rh-php72-php-xml
+      - rh-php72-php-zip
+    php_scl_package: rh-php72
+    php_use_scl: true
+    php_webserver_daemon: "rh-nginx18-nginx"
+    php_source_configure_command: >
+      --enable-fpm
 
   roles:
-    - role: geerlingguy.repo-remi
-      when:
-        - ansible_os_family == 'RedHat'
-        - ansible_distribution != 'Fedora'
-    - role: geerlingguy.php
-
-  post_tasks:
-    - name: Confirm PHP configuration is correct.
-      shell: php -i | grep 'memory_limit.*192'
-      changed_when: false
+    - role: nycrecords.rhsm
+    - role: nycrecords.nginx
+    - role: ansible-role-php
