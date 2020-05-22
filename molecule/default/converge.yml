@@ -35,21 +35,10 @@
 
     # Role: php
     php_install_from_source: false
-    php_packages:
-      - rh-php72
-      - rh-php72-php-bcmath
-      - rh-php72-php-common
-      - rh-php72-php-fpm
-      - rh-php72-php-mbstring
-      - rh-php72-php-mysqlnd
-      - rh-php72-php-pdo
-      - rh-php72-php-xml
-      - rh-php72-php-zip
     php_scl_package: rh-php72
     php_use_scl: true
+    php_enable_php_fpm: true
     php_webserver_daemon: "rh-nginx18-nginx"
-    php_source_configure_command: >
-      --enable-fpm
 
   roles:
     - role: nycrecords.rhsm

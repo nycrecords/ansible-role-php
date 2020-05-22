@@ -1,0 +1,28 @@
+---
+__php_packages:
+  - rh-php72
+  - rh-php72-php-devel
+  - rh-php72-php-fpm
+  - rh-php72-php-gd
+  - rh-php72-php-ldap
+  - rh-php72-php-mbstring
+  - rh-php72-php-opcache
+  - rh-php72-php-pdo
+  - rh-php72-php-pecl-apcu
+  - rh-php72-php-xmlrpc
+__php_webserver_daemon: "rh-nginx18-nginx"
+
+__php_conf_paths:
+  - /etc/opt/rh/rh-php72
+
+__php_extension_conf_paths:
+  - /etc/opt/rh/rh-php72/php.d
+
+__php_apc_conf_filename: 40-apcu.ini
+__php_opcache_conf_filename: 10-opcache.ini
+__php_fpm_daemon: rh-php72-php-fpm
+__php_fpm_conf_path: "/etc/opt/rh/rh-php72/php-fpm.d"
+__php_fpm_pool_conf_path: "/etc/opt/rh/rh-php72/php-fpm.d/www.conf"
+
+__php_fpm_pool_user: nginx
+__php_fpm_pool_group: nginx
