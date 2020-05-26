@@ -1,33 +1,24 @@
----
 language: python
-services: docker
-
+python:
+- 3.7
 env:
   global:
-    - ROLE_NAME: php
-  matrix:
-    - MOLECULE_DISTRO: centos8
-    - MOLECULE_DISTRO: centos7
-    - MOLECULE_DISTRO: ubuntu1804
-    - MOLECULE_DISTRO: ubuntu1604
-    - MOLECULE_DISTRO: debian9
-
-    - MOLECULE_DISTRO: centos7
-      MOLECULE_PLAYBOOK: playbook-source.yml
-
+  - MOLECULE_DEBUG: 'true'
+  - ROLE_NAME: ruby
+  - EC2_REGION: us-east-1
+  - secure: AHktmZpUtGqViGM1csT4H1ngbDRkjuSfml2PAHAi7nB0BZ3NUd8fONXG3Qvy9y2LOMdJTfMuU560n651ZXlONy4+Yx9xmaELIWp3oxcX/7xbu//Ck/eHh4UYrlpPGYdZJaSVP3OirFVfHL3MZqvx8laEdznJIYMAaqWtuy833atyDvHmoHat49UQfGtVgvsCmgWt6wgreJBU5mdXr0Z2e74VBHbceKLwzLINBx/Pc/75/PuA3D/JyjUPNgC0dwxxLdx4QEVqavNi2VTBRlCdqhEhMs6xkZKGEl8lCFwknDiwn+boi1TxamNSBPpNk0O4ymJeoMb2W4fZ6Bwc7EzzOBLzzNp5bf0ZOSxtmfiELXzsaMg9TiLeO9CUb9ZwSlWLdLioYgrp10YCBfDf1btncm0dwi+sqrJ9ovM+y/Q1RZqVLDaER3vTSSCXAUNdnnCEIWrVGRr8AAWiUZgSX7dhBq6lm6HjhmlVNrcMj3+50NUHMt5K/3GAOffIjcmcLJPAnfhG+QG9cumbQYzKtOCCannxe4dW40wc28zRrIQma5qNQC1jyndvSWbWq1zaIM7Si/7D0IbpIYh+gu5VpTdH0+LcBN+7VJ8BsBa4aC/vzDKOw4hc7jO4i8LEBXe95ddpbUkv3BBhAj8LbkC+/uDglwIDyuH3St3E4DgrsTdOtDo=
+  - secure: g96Nhddaw8Y3n0nAMcgeSWtn/OMER6m8y2s9vBdiegTA/YD9hYbAH/9zD0osnqNiEeJ8Wjs/X9T43dkILsGsazpHvdWPxDS3SptNS2O/qgaLSYCa7RBcUwhGv+k5f3BLn6NIDTgL17hAfAEklu1izsBHOcDbgweZCYatVtqE5RExhmP+5WOjLoAcVGHgojQQcHAgltBWG8n3948VFSRhTIjhlrp8vQaURAMcOyLRjZD/iReQCufcynOiVvaSxzHA/gLjTuYxCv/S3bj07YIszJ0lzli2UJAmafjo9G3GcSBBL0vAqIhoNe42qqlj0XOBp0DKnQUqrZg4ImoEvsC5kkxR7D6K9a5AltBik/k9l3cktiV9/g4bF1KvrmDdWEk8L78MlyfNdFIj8C2HjqWFRB/mZ74WjFf1wtPlIDmFWfCSidIiGPPaIqHjzZSmCX9jwdImEv6Ca7u7kCeSamo4ETdHKvTbVJW92BnnQPy4wXUnR3EHjhXWBWEyL2QyuQjyJTjy48VlRRz0quoBQfJlxgu4/7AaroOLG75plW5uDTP+KqTwtuD6opsCS5rOQmmePHUeRx85w55PiG3WdBfgRQiQ8pL0d5+Drl2Srz1FdqiB1yDKLDGQ7CPLNxvB4aOyPAahOaQngnSINtAK0Hi4oj1KHjHAkHGv4TzuwHeDcn8=
 install:
-  # Install test dependencies.
-  - pip install molecule yamllint ansible-lint docker
-
-before_script:
-  # Use actual Ansible Galaxy role name for the project directory.
-  - cd ../
-  - mv ansible-role-$ROLE_NAME geerlingguy.$ROLE_NAME
-  - cd geerlingguy.$ROLE_NAME
-
+- pip install pipenv
+- pipenv install
+- aws configure set aws_access_key_id $AWS_ACCESS_KEY
+- aws configure set aws_secret_access_key $AWS_SECRET_KEY
+- aws configure set default.region $EC2_REGION
+- aws configure list
 script:
-  # Run tests.
-  - molecule test
-
+- molecule create --scenario-name aws
+- molecule converge --scenario-name aws
+- molecule verify --scenario-name aws
+- molecule destroy --scenario-name aws
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
