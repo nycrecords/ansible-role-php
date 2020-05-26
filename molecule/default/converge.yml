@@ -5,8 +5,8 @@
 
   vars:
     # Role: rhsm
-    rhsm_username: "garyzhouny"
-    rhsm_password: "***REMOVED***"
+    rhsm_username: "{{ lookup('env', 'RHSM_USERNAME') }}"
+    rhsm_password: "{{ lookup('env', 'RHSM_PASSWORD') }}"
     rhsm_auto_attach: true
     rhsm_server_proxy_hostname: "{{ lookup('env', 'http_proxy_hostname') }}"
     rhsm_server_proxy_port: "{{ lookup('env', 'http_proxy_port') }}"
