@@ -54,4 +54,3 @@
         src: ../resources/test.php
         dest: /opt/rh/rh-nginx18/root/usr/share/nginx/html/test.php
 
-# post task create echo "<?php phpinfo(); ?>" >> /opt/rh/rh-nginx18/root/usr/share/nginx/html/test.php (store test.php file in resources and copy it)
