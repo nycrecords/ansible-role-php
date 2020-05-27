@@ -28,6 +28,13 @@
         server_name: "0.0.0.0"
         root: "/opt/rh/rh-nginx18/root/usr/share/nginx/html"
         index: "index.html index.htm"
+        extra_parameters: |
+          location ~* \.php$ {
+            fastcgi_pass    127.0.0.1:9000;
+            include         fastcgi_params;
+            fastcgi_param   SCRIPT_FILENAME    $document_root$fastcgi_script_name;
+            fastcgi_param   SCRIPT_NAME        $fastcgi_script_name;
+          }
 
     # Role: php
     php_install_from_source: false
@@ -40,3 +47,11 @@
     - role: nycrecords.rhsm
     - role: nycrecords.nginx
     - role: ansible-role-php
+
+  post_tasks:
+    - name: Copy PHP info file
+      copy:
+        src: ../resources/test.php
+        dest: /opt/rh/rh-nginx18/root/usr/share/nginx/html/test.php
+
+# post task create echo "<?php phpinfo(); ?>" >> /opt/rh/rh-nginx18/root/usr/share/nginx/html/test.php (store test.php file in resources and copy it)
