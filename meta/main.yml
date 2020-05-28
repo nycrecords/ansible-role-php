@@ -2,10 +2,7 @@
 dependencies: []
 
 galaxy_info:
-<<<<<<< HEAD
   role_name: php
-=======
->>>>>>> cd549c326216ffcd4590a20e80cbd33d97bcab89
   author: Gary Zhou
   description: PHP for RedHat/CentOS/Fedora/Debian/Ubuntu.
   company: "City of New York, Department of Records and Information Services"
